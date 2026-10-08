@@ -1,0 +1,188 @@
+{
+ "note": "装龛部件：坐标 = main.webp 像素（1800×2400）；由 _wip/s-assemble/make_parts.py 从 main_cut.webp 分割，全部装回逐像素等于 main_cut。",
+ "floor": 2286,
+ "altar": [
+  432,
+  230,
+  896,
+  2056
+ ],
+ "parts": [
+  {
+   "id": "base",
+   "file": "s_p_base.webp",
+   "x": 436,
+   "y": 1474,
+   "w": 853,
+   "h": 808,
+   "px": 182225,
+   "cx": 838.9,
+   "cy": 1903.3
+  },
+  {
+   "id": "mandorla",
+   "file": "s_p_mandorla.webp",
+   "x": 460,
+   "y": 234,
+   "w": 864,
+   "h": 1262,
+   "px": 417778,
+   "cx": 894.8,
+   "cy": 913.4
+  },
+  {
+   "id": "buddha",
+   "file": "s_p_buddha.webp",
+   "x": 729,
+   "y": 930,
+   "w": 276,
+   "h": 787,
+   "px": 127084,
+   "cx": 881.8,
+   "cy": 1351.8
+  },
+  {
+   "id": "bodhiSideL",
+   "file": "s_p_bodhiSideL.webp",
+   "x": 479,
+   "y": 1164,
+   "w": 164,
+   "h": 367,
+   "px": 30407,
+   "cx": 560.2,
+   "cy": 1353.7
+  },
+  {
+   "id": "bodhiSideR",
+   "file": "s_p_bodhiSideR.webp",
+   "x": 1117,
+   "y": 1171,
+   "w": 182,
+   "h": 369,
+   "px": 38149,
+   "cx": 1197.8,
+   "cy": 1351.4
+  },
+  {
+   "id": "bodhiFootL",
+   "file": "s_p_bodhiFootL.webp",
+   "x": 670,
+   "y": 1481,
+   "w": 121,
+   "h": 341,
+   "px": 20888,
+   "cx": 720.9,
+   "cy": 1651.2
+  },
+  {
+   "id": "bodhiFootR",
+   "file": "s_p_bodhiFootR.webp",
+   "x": 955,
+   "y": 1506,
+   "w": 106,
+   "h": 308,
+   "px": 18073,
+   "cx": 1013.8,
+   "cy": 1652.8
+  },
+  {
+   "id": "patronsL",
+   "file": "s_p_patronsL.webp",
+   "x": 525,
+   "y": 1538,
+   "w": 163,
+   "h": 252,
+   "px": 27920,
+   "cx": 606.3,
+   "cy": 1665.7
+  },
+  {
+   "id": "patronsR",
+   "file": "s_p_patronsR.webp",
+   "x": 1083,
+   "y": 1514,
+   "w": 171,
+   "h": 276,
+   "px": 30445,
+   "cx": 1165.9,
+   "cy": 1656.0
+  },
+  {
+   "id": "guardL",
+   "file": "s_p_guardL.webp",
+   "x": 465,
+   "y": 1770,
+   "w": 111,
+   "h": 221,
+   "px": 14091,
+   "cx": 529.3,
+   "cy": 1881.6
+  },
+  {
+   "id": "guardR",
+   "file": "s_p_guardR.webp",
+   "x": 1132,
+   "y": 1809,
+   "w": 137,
+   "h": 187,
+   "px": 16575,
+   "cx": 1196.4,
+   "cy": 1911.1
+  },
+  {
+   "id": "incense",
+   "file": "s_p_incense.webp",
+   "x": 729,
+   "y": 1667,
+   "w": 296,
+   "h": 239,
+   "px": 37913,
+   "cx": 883.1,
+   "cy": 1806.9
+  },
+  {
+   "id": "monkL",
+   "file": "s_p_monkL.webp",
+   "x": 750,
+   "y": 1651,
+   "w": 76,
+   "h": 161,
+   "px": 6976,
+   "cx": 788.2,
+   "cy": 1733.1
+  },
+  {
+   "id": "monkR",
+   "file": "s_p_monkR.webp",
+   "x": 945,
+   "y": 1664,
+   "w": 56,
+   "h": 150,
+   "px": 5114,
+   "cx": 967.2,
+   "cy": 1731.5
+  },
+  {
+   "id": "lionL",
+   "file": "s_p_lionL.webp",
+   "x": 461,
+   "y": 2051,
+   "w": 207,
+   "h": 178,
+   "px": 18827,
+   "cx": 586.9,
+   "cy": 2149.2
+  },
+  {
+   "id": "lionR",
+   "file": "s_p_lionR.webp",
+   "x": 1061,
+   "y": 2073,
+   "w": 146,
+   "h": 155,
+   "px": 12105,
+   "cx": 1134.6,
+   "cy": 2156.8
+  }
+ ]
+}

@@ -1,0 +1,1132 @@
+{
+ "W": 16000,
+ "H": 1358,
+ "layers": [
+  {
+   "id": "mid00",
+   "file": "mid/m00.webp",
+   "x": 0.0,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid01",
+   "file": "mid/m01.webp",
+   "x": 1397.24,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid02",
+   "file": "mid/m02.webp",
+   "x": 2794.47,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid03",
+   "file": "mid/m03.webp",
+   "x": 4191.71,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid04",
+   "file": "mid/m04.webp",
+   "x": 5588.95,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid05",
+   "file": "mid/m05.webp",
+   "x": 6986.18,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid06",
+   "file": "mid/m06.webp",
+   "x": 8383.42,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid07",
+   "file": "mid/m07.webp",
+   "x": 9780.66,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid08",
+   "file": "mid/m08.webp",
+   "x": 11177.9,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid09",
+   "file": "mid/m09.webp",
+   "x": 12575.13,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid10",
+   "file": "mid/m10.webp",
+   "x": 13972.37,
+   "y": 0,
+   "w": 1397.24,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    2048,
+    1990
+   ]
+  },
+  {
+   "id": "mid11",
+   "file": "mid/m11.webp",
+   "x": 15369.61,
+   "y": 0,
+   "w": 630.39,
+   "h": 1358,
+   "kind": "tile",
+   "px": [
+    924,
+    1990
+   ]
+  },
+  {
+   "id": "hr_tingyue_hxz",
+   "file": "hr/tingyue_hxz.webp",
+   "kind": "hr",
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "note": "听乐段韩熙载（连郎粲下半身、白衣女子、榻）F 1:1",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58
+  },
+  {
+   "id": "hr_face_tingyue",
+   "file": "hr/face_tingyue.webp",
+   "kind": "hr",
+   "px": [
+    585,
+    610
+   ],
+   "F": [
+    42670,
+    977,
+    43255,
+    1587
+   ],
+   "note": "tingyue 韩熙载面部 F 1:1",
+   "x": 14555.69,
+   "y": 333.28,
+   "w": 199.56,
+   "h": 208.08
+  },
+  {
+   "id": "hr_face_guanwu",
+   "file": "hr/face_guanwu.webp",
+   "kind": "hr",
+   "px": [
+    620,
+    590
+   ],
+   "F": [
+    34133,
+    403,
+    34753,
+    993
+   ],
+   "note": "guanwu 韩熙载面部 F 1:1",
+   "x": 11643.53,
+   "y": 137.47,
+   "w": 211.5,
+   "h": 201.26
+  },
+  {
+   "id": "hr_face_xiuxi",
+   "file": "hr/face_xiuxi.webp",
+   "kind": "hr",
+   "px": [
+    545,
+    610
+   ],
+   "F": [
+    22626,
+    1185,
+    23171,
+    1795
+   ],
+   "note": "xiuxi 韩熙载面部 F 1:1",
+   "x": 7718.23,
+   "y": 404.23,
+   "w": 185.91,
+   "h": 208.08
+  },
+  {
+   "id": "hr_face_qingchui",
+   "file": "hr/face_qingchui.webp",
+   "kind": "hr",
+   "px": [
+    605,
+    585
+   ],
+   "F": [
+    18281,
+    691,
+    18886,
+    1276
+   ],
+   "note": "qingchui 韩熙载面部 F 1:1",
+   "x": 6236.06,
+   "y": 235.72,
+   "w": 206.38,
+   "h": 199.56
+  },
+  {
+   "id": "hr_face_songbie",
+   "file": "hr/face_songbie.webp",
+   "kind": "hr",
+   "px": [
+    530,
+    590
+   ],
+   "F": [
+    3688,
+    537,
+    4218,
+    1127
+   ],
+   "note": "songbie 韩熙载面部 F 1:1",
+   "x": 1258.06,
+   "y": 183.18,
+   "w": 180.79,
+   "h": 201.26
+  },
+  {
+   "id": "mask_tingyue_hxz_figure",
+   "file": "mask/tingyue_hxz_figure.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_hat",
+   "file": "mask/tingyue_hxz_hat.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_face",
+   "file": "mask/tingyue_hxz_face.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_beard",
+   "file": "mask/tingyue_hxz_beard.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_robe",
+   "file": "mask/tingyue_hxz_robe.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_hand",
+   "file": "mask/tingyue_hxz_hand.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "mask_tingyue_hxz_eye",
+   "file": "mask/tingyue_hxz_eye.png",
+   "kind": "mask",
+   "x": 14258.91,
+   "y": 136.45,
+   "w": 750.47,
+   "h": 784.58,
+   "px": [
+    2200,
+    2300
+   ],
+   "F": [
+    41800,
+    400,
+    44000,
+    2700
+   ],
+   "frame": "hr_tingyue_hxz"
+  },
+  {
+   "id": "patch_tingyue_eyeless",
+   "file": "hr/tingyue_eyeless.png",
+   "kind": "patch",
+   "x": 14601.74,
+   "y": 397.75,
+   "w": 68.22,
+   "h": 40.93,
+   "px": [
+    200,
+    120
+   ],
+   "F": [
+    42805,
+    1166,
+    43005,
+    1286
+   ],
+   "note": "RGBA：眼睛区域修补成周围的肤色和绢纹（Telea + 借额头纹理），alpha 只在眼椭圆里；叠在原图上 = 没有眼睛的脸"
+  }
+ ],
+ "reading": "right_to_left",
+ "head_x": 16000,
+ "full": {
+  "file": "_wip/prep-yeyan/painting_full.npy（不发布）",
+  "W": 46904,
+  "H": 3981,
+  "scale_to_main": 0.341122,
+  "origin_in_original": [
+   31958,
+   0
+  ]
+ },
+ "mid": {
+  "W": 23452,
+  "H": 1990,
+  "scale_to_main": 0.682245
+ },
+ "sections": [
+  {
+   "id": "tingyue",
+   "label": "听乐",
+   "box": [
+    12330,
+    0,
+    3670,
+    1358
+   ]
+  },
+  {
+   "id": "guanwu",
+   "label": "观舞",
+   "box": [
+    9830,
+    0,
+    2500,
+    1358
+   ]
+  },
+  {
+   "id": "xiuxi",
+   "label": "休憩",
+   "box": [
+    6840,
+    0,
+    2990,
+    1358
+   ]
+  },
+  {
+   "id": "qingchui",
+   "label": "清吹",
+   "box": [
+    3470,
+    0,
+    3370,
+    1358
+   ]
+  },
+  {
+   "id": "songbie",
+   "label": "送别",
+   "box": [
+    0,
+    0,
+    3470,
+    1358
+   ]
+  }
+ ],
+ "hanxizai": [
+  {
+   "n": 1,
+   "section": "tingyue",
+   "figure_box": [
+    14504.52,
+    218.32,
+    320.65,
+    641.31
+   ],
+   "face_box": [
+    14610.27,
+    387.86,
+    90.4,
+    98.93
+   ],
+   "eyes": [
+    [
+     14635.85,
+     418.22
+    ]
+   ],
+   "eyes_F": [
+    [
+     42905,
+     1226
+    ]
+   ],
+   "face_box_F": [
+    42830,
+    1137,
+    43095,
+    1427
+   ],
+   "figure_box_F": [
+    42520,
+    640,
+    43460,
+    2520
+   ],
+   "facing": "left",
+   "what": "坐在榻上听弹琵琶，侧身，一只手搭在榻栏上",
+   "note": "近乎正侧面朝左，只看得见一只眼（近眼）；远眼被鼻梁挡住",
+   "eye_box_F": [
+    [
+     42873,
+     1212,
+     42938,
+     1240
+    ]
+   ],
+   "pupil_F": [
+    [
+     42887,
+     1228
+    ]
+   ],
+   "eye_box": [
+    [
+     14624.94,
+     413.44,
+     22.17,
+     9.55
+    ]
+   ],
+   "pupil": [
+    [
+     14629.71,
+     418.9
+    ]
+   ]
+  },
+  {
+   "n": 2,
+   "section": "guanwu",
+   "figure_box": [
+    11615.21,
+    40.93,
+    317.24,
+    999.49
+   ],
+   "face_box": [
+    11698.11,
+    192.05,
+    102.34,
+    92.1
+   ],
+   "eyes": [
+    [
+     11710.05,
+     222.75
+    ],
+    [
+     11740.75,
+     224.46
+    ]
+   ],
+   "eyes_F": [
+    [
+     34328,
+     653
+    ],
+    [
+     34418,
+     658
+    ]
+   ],
+   "face_box_F": [
+    34293,
+    563,
+    34593,
+    833
+   ],
+   "figure_box_F": [
+    34050,
+    120,
+    34980,
+    3050
+   ],
+   "facing": "left",
+   "what": "立在红鼓旁，挽袖执槌亲自击鼓，为王屋山的六幺舞打拍子",
+   "note": "四分之三侧脸，两眼可见"
+  },
+  {
+   "n": 3,
+   "section": "xiuxi",
+   "figure_box": [
+    7651.37,
+    341.12,
+    337.71,
+    532.15
+   ],
+   "face_box": [
+    7772.81,
+    458.81,
+    76.75,
+    98.93
+   ],
+   "eyes": [
+    [
+     7825.69,
+     488.83
+    ]
+   ],
+   "eyes_F": [
+    [
+     22941,
+     1433
+    ]
+   ],
+   "face_box_F": [
+    22786,
+    1345,
+    23011,
+    1635
+   ],
+   "figure_box_F": [
+    22430,
+    1000,
+    23420,
+    2560
+   ],
+   "facing": "right",
+   "what": "坐在床榻上，侍女捧盆，正在洗手歇息",
+   "note": "正侧面朝右，一只眼"
+  },
+  {
+   "n": 4,
+   "section": "qingchui",
+   "figure_box": [
+    6065.15,
+    129.63,
+    358.18,
+    764.11
+   ],
+   "face_box": [
+    6290.64,
+    290.3,
+    97.22,
+    90.4
+   ],
+   "eyes": [
+    [
+     6299.85,
+     327.14
+    ],
+    [
+     6333.28,
+     322.7
+    ]
+   ],
+   "eyes_F": [
+    [
+     18468,
+     959
+    ],
+    [
+     18566,
+     946
+    ]
+   ],
+   "face_box_F": [
+    18441,
+    851,
+    18726,
+    1116
+   ],
+   "figure_box_F": [
+    17780,
+    380,
+    18830,
+    2620
+   ],
+   "facing": "front",
+   "what": "宽衣袒腹，盘腿坐在椅上，手执团扇，听五位女伎吹横笛、筚篥",
+   "note": "四分之三正脸，两眼可见"
+  },
+  {
+   "n": 5,
+   "section": "songbie",
+   "figure_box": [
+    1193.93,
+    54.58,
+    347.94,
+    1132.53
+   ],
+   "face_box": [
+    1312.64,
+    237.76,
+    71.64,
+    92.1
+   ],
+   "eyes": [
+    [
+     1353.57,
+     265.05
+    ]
+   ],
+   "eyes_F": [
+    [
+     3968,
+     777
+    ]
+   ],
+   "face_box_F": [
+    3848,
+    697,
+    4058,
+    967
+   ],
+   "figure_box_F": [
+    3500,
+    160,
+    4520,
+    3480
+   ],
+   "facing": "right",
+   "what": "穿黄衫独立，举起一只手，像在送客又像在挽留",
+   "note": "正侧面朝右，一只眼"
+  }
+ ],
+ "screens": [
+  {
+   "id": "pine_screen",
+   "between": [
+    "qingchui",
+    "songbie"
+   ],
+   "box": [
+    3080,
+    0,
+    790,
+    1270
+   ],
+   "note": "两根青柱夹一扇松石屏；柱前立一男宾，屏后露一女伎"
+  },
+  {
+   "id": "tall_screen",
+   "between": [
+    "xiuxi",
+    "qingchui"
+   ],
+   "box": [
+    6760,
+    0,
+    680,
+    1350
+   ],
+   "note": "一扇青绢高屏（钤\"古希天子\"大印一方），带黑色屏座"
+  },
+  {
+   "id": "bed_screen",
+   "between": [
+    "xiuxi"
+   ],
+   "box": [
+    7400,
+    0,
+    1960,
+    1300
+   ],
+   "note": "休憩段的床榻与围屏、红帐"
+  },
+  {
+   "id": "pillar_screen",
+   "between": [
+    "tingyue",
+    "guanwu"
+   ],
+   "box": [
+    12300,
+    0,
+    120,
+    1230
+   ],
+   "note": "一根青柱加屏座，柱后是画着枯树山石的屏风"
+  },
+  {
+   "id": "couch_screen",
+   "between": [
+    "tingyue"
+   ],
+   "box": [
+    14040,
+    0,
+    1410,
+    1250
+   ],
+   "note": "听乐段韩熙载坐的大榻（黑漆围板）"
+  }
+ ],
+ "reveal_tingyue": {
+  "figure": "tingyue_hxz 第 1 处",
+  "order": [
+   "robe",
+   "hand",
+   "hat",
+   "face",
+   "beard",
+   "eye"
+  ],
+  "plan_order": "衣袍→面→须，眼睛最后",
+  "note": "部位遮罩在 hr_tingyue_hxz 像素空间（F 偏移 41800,400，2200×2300）；各部位互不重叠、并起来 = figure"
+ },
+ "match": {
+  "prev": "sancai",
+  "prev_file": "rooms/sancai/main.webp",
+  "prev_eye": [
+   640,
+   418
+  ],
+  "prev_note": "马眼（取自 _wip/prep-sancai/points.json，sancai main 2400×2264 像素）",
+  "eye": [
+   14629.71,
+   418.9
+  ],
+  "eye_F": [
+   42887,
+   1228
+  ],
+  "eye_box": [
+   14624.94,
+   413.44,
+   22.17,
+   9.55
+  ],
+  "note": "马眼 ↔ 听乐段韩熙载的近眼（瞳点）。马眼朝左，韩熙载也朝左，方向一致"
+ },
+ "tingyue_points": {
+  "pipa_player_face": [
+   12705,
+   575
+  ],
+  "pipa_body": [
+   12755,
+   790
+  ],
+  "red_guest_face": [
+   14420,
+   140
+  ],
+  "seated_man_face": [
+   13185,
+   490
+  ],
+  "white_lady_face": [
+   14870,
+   585
+  ],
+  "drum_on_stand": [
+   15070,
+   900
+  ],
+  "hxz_eye": [
+   14629.71,
+   418.9
+  ]
+ },
+ "seals": [
+  {
+   "box": [
+    40,
+    20,
+    120,
+    130
+   ],
+   "shape": "round",
+   "edge": false,
+   "faint": true,
+   "id": "seal00",
+   "read": ""
+  },
+  {
+   "box": [
+    215,
+    0,
+    245,
+    250
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal01",
+   "read": ""
+  },
+  {
+   "box": [
+    120,
+    390,
+    170,
+    240
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal02",
+   "read": ""
+  },
+  {
+   "box": [
+    130,
+    640,
+    170,
+    190
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal03",
+   "read": ""
+  },
+  {
+   "box": [
+    0,
+    860,
+    120,
+    210
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal04",
+   "read": ""
+  },
+  {
+   "box": [
+    95,
+    970,
+    150,
+    150
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal05",
+   "read": ""
+  },
+  {
+   "box": [
+    90,
+    1120,
+    165,
+    150
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal06",
+   "read": ""
+  },
+  {
+   "box": [
+    0,
+    1200,
+    185,
+    158
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal07",
+   "read": ""
+  },
+  {
+   "box": [
+    0,
+    600,
+    50,
+    130
+   ],
+   "shape": "square",
+   "edge": true,
+   "faint": false,
+   "id": "seal08",
+   "read": ""
+  },
+  {
+   "box": [
+    10260,
+    40,
+    200,
+    240
+   ],
+   "shape": "oval",
+   "edge": false,
+   "faint": false,
+   "read": "宣统御览之宝（目验，待核）",
+   "id": "seal09"
+  },
+  {
+   "box": [
+    6965,
+    292,
+    341,
+    342
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "read": "古稀天子（乾隆，目验，待核）",
+   "id": "seal10"
+  },
+  {
+   "box": [
+    7010,
+    25,
+    200,
+    210
+   ],
+   "shape": "round",
+   "edge": false,
+   "faint": false,
+   "id": "seal11",
+   "read": ""
+  },
+  {
+   "box": [
+    15900,
+    0,
+    100,
+    200
+   ],
+   "shape": "square",
+   "edge": true,
+   "faint": false,
+   "id": "seal12",
+   "read": ""
+  },
+  {
+   "box": [
+    15890,
+    581,
+    110,
+    135
+   ],
+   "shape": "square",
+   "edge": true,
+   "faint": false,
+   "id": "seal13",
+   "read": ""
+  },
+  {
+   "box": [
+    15872,
+    777,
+    128,
+    214
+   ],
+   "shape": "square",
+   "edge": true,
+   "faint": false,
+   "id": "seal14",
+   "read": ""
+  },
+  {
+   "box": [
+    11954,
+    18,
+    146,
+    190
+   ],
+   "shape": "oval",
+   "edge": false,
+   "faint": false,
+   "read": "嘉庆御览之宝（目验，待核）",
+   "id": "seal15"
+  },
+  {
+   "box": [
+    15840,
+    1260,
+    100,
+    98
+   ],
+   "shape": "square",
+   "edge": false,
+   "faint": false,
+   "id": "seal16",
+   "read": ""
+  }
+ ]
+}

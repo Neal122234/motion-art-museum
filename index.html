@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Motion Art Museum</title>
+<meta name="description" content="Motion Art Museum 门厅。两座按时间走的艺术展厅：西方厅「艺术的演进」十八间，中国厅「中国艺术的演变」二十一间。">
+<meta name="theme-color" content="#0b0908">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Motion Art Museum">
+<meta property="og:title" content="Motion Art Museum">
+<meta property="og:description" content="两座按时间走的艺术展厅：西方厅「艺术的演进」，中国厅「中国艺术的演变」。">
+<meta property="og:url" content="https://motion-art-museum.pages.dev/">
+<meta property="og:image" content="https://motion-art-museum.pages.dev/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="canonical" href="https://motion-art-museum.pages.dev/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230b0908'/%3E%3Cpath d='M5 26h22M8 26V12l3-3h2l3 3v14M18 26V13h9v13M17 13h11' stroke='%23d9c4a0' stroke-width='1.6' fill='none'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/song-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/song-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"MAM Song";src:url(fonts/song-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"MAM Song";src:url(fonts/song-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"MAM Bodoni";src:url(fonts/bodoni.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"MAM Bodoni";src:url(fonts/bodoni-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+:root{
+  --bg:#0b0908;
+  --ink:#efe7d9;
+  --ink2:rgba(236,227,212,.80);
+  --ink3:rgba(236,227,212,.58);
+  --warm:#dcbd8d;
+  --cool:#b9c7d6;
+  --song:"MAM Song","Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
+  --didone:"MAM Bodoni","Bodoni Moda","Didot","Bodoni 72",serif;
+  --shadow:0 0 18px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--bg)}
+html,body{margin:0;height:100%;overflow:hidden}
+body{color:var(--ink);font-family:var(--song);background:var(--bg);-webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* ---------- 画面：静帧（首屏 / 无 WebGL / 减少动态）、WebGL 画布、行进视频 ---------- */
+#stage{position:fixed;inset:0;overflow:hidden;background:var(--bg)}
+#stills{position:absolute;left:0;top:0;width:100%;height:100%}
+#stills img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+#still-west,#still-china{opacity:0;transition:opacity .5s ease}
+body[data-lit="west"] #still-west,body[data-lit="china"] #still-china{opacity:1}
+body.entering #still-west,body.entering #still-china{transition-duration:.2s}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0}
+body.gl #gl{opacity:1}
+body.gl #stills{visibility:hidden}
+.walk{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;
+  transition:opacity .15s linear;background:transparent}
+.walk.on{opacity:1}
+body.hot #stage{cursor:pointer}
+
+/* ---------- 馆名 ---------- */
+.mark{position:fixed;left:0;right:0;top:max(18px,env(safe-area-inset-top));margin:0;text-align:center;pointer-events:none;
+  font:500 13px/1 var(--didone);letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;color:rgba(236,227,212,.74);
+  text-shadow:var(--shadow);opacity:0;transition:opacity 1.2s ease .2s}
+@media (min-width:1200px){.mark{font-size:14px;top:24px}}
+
+/* ---------- 两段说明（真正的链接） ---------- */
+.halls{position:fixed;inset:0;pointer-events:none;margin:0}
+.hall{position:absolute;display:block;pointer-events:auto;outline:none;
+  left:3vw;top:20vh;width:min(30vw,300px);--t:28px;--b:14px;
+  text-shadow:var(--shadow);opacity:0;transition:opacity .5s ease}
+#hall-china{left:auto;right:3vw;top:12vh}
+.hall .lab{display:block;font:400 max(11px,calc(var(--b)*.8))/1.4 var(--song);letter-spacing:.32em;margin:0 0 .55em;color:var(--warm)}
+#hall-china .lab{color:var(--cool)}
+.hall .name{display:block;font:600 var(--t)/1.25 var(--song);letter-spacing:.06em;color:var(--ink);white-space:nowrap;transition:color .5s ease}
+.hall{isolation:isolate}
+.hall::before{content:"";position:absolute;z-index:-1;left:-22%;right:-22%;top:-18%;bottom:-18%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(6,5,4,.42),rgba(6,5,4,.25) 55%,rgba(6,5,4,0))}
+@media (max-aspect-ratio:1/1){.hall::before{background:radial-gradient(closest-side,rgba(6,5,4,.66),rgba(6,5,4,.42) 55%,rgba(6,5,4,0))}}
+.hall .en{display:block;font:italic 400 max(12px,calc(var(--t)*.5))/1.3 var(--didone);letter-spacing:.02em;color:var(--ink3);margin:.35em 0 .85em}
+.hall .desc{display:block;font:400 var(--b)/1.75 var(--song);color:var(--ink2);text-align:justify;text-wrap:pretty;transition:color .5s ease}
+.hall .name::after{content:"";display:block;width:1.6em;height:1px;margin-top:.32em;background:currentColor;opacity:0;
+  transform:scaleX(.2);transform-origin:left;transition:opacity .3s ease,transform .4s ease}
+.hall:focus-visible .name::after{opacity:.7;transform:none}
+body.ready .hall{opacity:.86}
+body.ready[data-lit] .hall{opacity:.5}
+body.ready[data-lit="west"] #hall-west,body.ready[data-lit="china"] #hall-china{opacity:1}
+body[data-lit="west"] #hall-west .desc,body[data-lit="china"] #hall-china .desc{color:rgba(240,232,219,.94)}
+body.ready .mark{opacity:1}
+body.entering .hall,body.entering .mark,body.entering .foot,body.entering .snd{opacity:0 !important;transition:opacity .35s ease}
+.door{position:absolute;display:block;pointer-events:auto;outline:none}
+body.short .hall .lab{margin-bottom:.3em}
+body.short .hall .en{margin:.2em 0 .55em}
+body.short .hall .desc{line-height:1.62}
+
+/* ---------- 黑场（入场淡入、进门淡出） ---------- */
+#veil{position:fixed;inset:0;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .9s ease}
+#veil.on{opacity:1}
+#veil.block{pointer-events:auto}
+
+/* ---------- 致谢 ---------- */
+.foot{position:fixed;left:max(14px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));
+  font:400 12px/1.6 var(--song);color:var(--ink3);opacity:0;transition:opacity 1s ease .6s}
+body.ready .foot{opacity:1}
+#credits-btn{font:inherit;color:inherit;background:none;border:0;padding:6px 2px;cursor:pointer;letter-spacing:.2em;
+  text-shadow:var(--shadow);opacity:.75}
+#credits-btn:hover,#credits-btn:focus-visible,#credits-btn[aria-expanded="true"]{opacity:1;color:var(--ink)}
+#credits-btn:focus-visible{outline:1px solid rgba(236,227,212,.5);outline-offset:2px}
+#credits{position:absolute;left:0;bottom:100%;width:min(460px,calc(100vw - 28px));margin-bottom:4px;padding:16px 18px 14px;
+  background:radial-gradient(120% 120% at 0% 100%,rgba(8,7,6,.94),rgba(8,7,6,.84));
+  color:var(--ink2);font-size:12px;line-height:1.75;border-radius:2px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#credits[hidden]{display:none}
+#credits p{margin:0 0 .45em}
+#credits p:last-child{margin:0;color:var(--ink3)}
+#credits a{color:var(--ink);text-decoration:underline;text-decoration-color:rgba(236,227,212,.3);text-underline-offset:3px}
+#credits a:hover{text-decoration-color:currentColor}
+
+/* ---------- 声音开关（右下角，和"致谢"同一套字与灰度） ---------- */
+.snd{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));
+  font:400 12px/1.6 var(--song);color:var(--ink3);opacity:0;transition:opacity 1s ease .6s}
+body.ready .snd{opacity:1}
+#sound-btn{font:inherit;color:inherit;background:none;border:0;padding:6px 2px;cursor:pointer;letter-spacing:.2em;
+  text-shadow:var(--shadow);opacity:.75;display:inline-flex;align-items:center;gap:.45em}
+#sound-btn:hover,#sound-btn:focus-visible{opacity:1;color:var(--ink)}
+#sound-btn:focus-visible{outline:1px solid rgba(236,227,212,.5);outline-offset:2px}
+#sound-btn svg{width:14px;height:14px;flex:none;overflow:visible;fill:none;stroke:currentColor;stroke-width:1;
+  stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(0,0,0,.9))}
+#sound-btn .on{display:none}
+#sound-btn[aria-pressed="true"] .on{display:inline}
+#sound-btn[aria-pressed="true"] .off{display:none}
+#sound-btn[aria-pressed="false"] span{opacity:.8}
+
+@media (prefers-reduced-motion:reduce){
+  #veil{transition-duration:.3s}
+  .mark,.hall,.foot,.snd{transition-duration:.2s;transition-delay:0s}
+}
+</style>
+<noscript><style>.hall,.mark,.foot{opacity:1 !important}#veil{display:none}.snd{display:none}</style></noscript>
+</head>
+<body>
+<div id="stage" aria-hidden="true">
+  <div id="stills">
+    <picture>
+      <source media="(max-aspect-ratio: 1/1)" type="image/avif" srcset="img/port_rest.avif">
+      <source media="(max-aspect-ratio: 1/1)" type="image/webp" srcset="img/port_rest.webp">
+      <source type="image/avif" srcset="img/land_rest.avif">
+      <img id="still-rest" src="img/land_rest.webp" alt="" decoding="async" fetchpriority="high">
+    </picture>
+    <img id="still-west" alt="" decoding="async">
+    <img id="still-china" alt="" decoding="async">
+  </div>
+  <canvas id="gl"></canvas>
+  <video id="walk-west" class="walk" muted playsinline preload="none" disablepictureinpicture></video>
+  <video id="walk-china" class="walk" muted playsinline preload="none" disablepictureinpicture></video>
+</div>
+
+<h1 class="mark">Motion Art Museum</h1>
+
+<nav class="halls" aria-label="两座展厅">
+  <a class="door" id="door-west" href="west/" data-side="west" tabindex="-1" aria-hidden="true"></a>
+  <a class="door" id="door-china" href="china/" data-side="china" tabindex="-1" aria-hidden="true"></a>
+  <a class="hall" id="hall-west" href="west/" data-side="west">
+    <span class="lab">西方厅</span>
+    <span class="name">艺术的演进</span>
+    <span class="en" lang="en">Art in Motion</span>
+    <span class="desc">从史前洞穴到当代，十八间展厅，按时间走一遍西方艺术。每间一件作品，看艺术怎样一步步变成今天的样子。</span>
+  </a>
+  <a class="hall" id="hall-china" href="china/" data-side="china">
+    <span class="lab">中国厅</span>
+    <span class="name">中国艺术的演变</span>
+    <span class="en" lang="en">Chinese Art</span>
+    <span class="desc">从新石器彩陶到近现代，二十一间展厅，按时间走一遍中国艺术。陶器、青铜、书画、瓷器，每个时代挑一件来看。</span>
+  </a>
+</nav>
+
+<div class="foot">
+  <button id="credits-btn" type="button" aria-expanded="false" aria-controls="credits">致谢</button>
+  <div id="credits" hidden>
+    <p>石膏像 3D 扫描：<a href="https://open.smk.dk/" rel="noopener" target="_blank">SMK, Statens Museum for Kunst</a> 皇家石膏像收藏（公有领域）</p>
+    <p>雌石狮 3D 扫描：<a href="https://commons.wikimedia.org/wiki/File:Chinese_guardian_lions_at_the_WIPO-High_poly.stl" rel="noopener" target="_blank">Rama / Wikimedia Commons</a>，<a href="https://creativecommons.org/licenses/by-sa/3.0/fr/deed.en" rel="noopener" target="_blank">CC BY-SA 3.0 FR</a>（已减面）</p>
+    <p>雄石狮 3D 扫描（黄大仙祠）：<a href="https://sketchfab.com/3d-models/lion-guardian-ede9f54821814ee480e5ac688a301161" rel="noopener" target="_blank">yoko3d / Sketchfab</a>，<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>（已减面、缩放）</p>
+    <p>贴图与环境光：<a href="https://ambientcg.com/" rel="noopener" target="_blank">ambientCG</a>、<a href="https://polyhaven.com/" rel="noopener" target="_blank">Poly Haven</a>（CC0）</p>
+    <p>字体：Noto Serif SC、Bodoni Moda（SIL Open Font License）</p>
+    <p>钢琴：德彪西《月光》（《贝加马斯克组曲》第三首）开头段，演奏 Laurens Goedhart，<a href="https://commons.wikimedia.org/wiki/File:Clair_de_lune_(Claude_Debussy)_Suite_bergamasque.ogg" rel="noopener" target="_blank">Wikimedia Commons</a>，录音 <a href="https://creativecommons.org/licenses/by/3.0/" rel="noopener" target="_blank">CC BY 3.0</a>（已截取、做循环并加混响）</p>
+    <p>音效：Gravity Sound 的 <a href="https://commons.wikimedia.org/wiki/File:Open_squeaky_door_(Gravity_Sound).wav" rel="noopener" target="_blank">Open squeaky door</a>、<a href="https://commons.wikimedia.org/wiki/File:Leaves_in_the_wind_(Gravity_Sound).wav" rel="noopener" target="_blank">Leaves in the wind</a>（Wikimedia Commons，<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC BY 4.0</a>）；另用 <a href="https://kenney.nl/" rel="noopener" target="_blank">Kenney</a>、<a href="https://commons.wikimedia.org/wiki/File:Door_knocker_audio.ogg" rel="noopener" target="_blank">Mx. Granger</a>、<a href="https://opengameart.org/content/crickets-ambient-noise-loopable" rel="noopener" target="_blank">Wolfgang_</a> 的 CC0 素材。均有改动；混响与大厅底噪为程序合成。</p>
+    <p>门厅渲染图与行进视频含 CC BY-SA 3.0 FR 素材（雌石狮），这些画面按 <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener" target="_blank">CC BY-SA 3.0</a> 发布。</p>
+  </div>
+</div>
+
+<div class="snd" hidden>
+  <button id="sound-btn" type="button" aria-pressed="false" title="声音">
+    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1.5 5.2h2.4L7 2.4v9.2L3.9 8.8H1.5z"/><path class="on" d="M9.2 5a2.6 2.6 0 0 1 0 4M10.9 3.4a5 5 0 0 1 0 7.2"/><path class="off" d="M9.4 5.3l3.2 3.4M12.6 5.3L9.4 8.7"/></svg><span>声音</span>
+  </button>
+</div>
+
+<div id="veil" class="on"></div>
+
+<script src="assets.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.LOBBY;
+  var doc = document, body = doc.body;
+  var $ = function (s) { return doc.querySelector(s); };
+  if (!CFG) { body.classList.add('ready'); $('#veil').classList.remove('on'); return; }
+
+  // ------------------------------------------------------------------ constants
+  var Z = 1.035;                 // 视差留边：画面比 cover 再放大 3.5%
+  var AMP = [0.032, 0.016];      // 视差幅度（图像 uv / 单位视差 v），水平 / 竖直
+  var WDUR = 500, WDUR_ENTER = 200, NEUTRAL = 180, VFADE_END = 0.5;
+  var HALL_BG = { west: '#0b0908', china: '#070605' };
+  var SIDES = ['west', 'china'];
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var noHover = matchMedia('(hover: none)');
+
+  var stage = $('#stage'), cv = $('#gl'), stills = $('#stills'), veil = $('#veil'), mark = $('.mark');
+  var imgs = { rest: $('#still-rest'), west: $('#still-west'), china: $('#still-china') };
+  var halls = { west: $('#hall-west'), china: $('#hall-china') };
+  var doors = { west: $('#door-west'), china: $('#door-china') };
+  var vids = { west: $('#walk-west'), china: $('#walk-china') };
+
+  // ------------------------------------------------------------------ state
+  var setKey = null, S = null, ext = null;
+  var vw = 0, vh = 0, sc = 1, iw = 0, ih = 0, ox = 0, oy = 0;
+  var hover = null, focusSide = null, entering = null, enterHref = null, fading = false, timers = [];
+  var T = [0, 0], V = [0, 0], P = [0, 0], neutral = null, lastMouse = -1e9;
+  var W = [1, 0, 0], wFrom = [1, 0, 0], wTo = [1, 0, 0], wT0 = 0, wDur = WDUR;
+  var gl = null, gl2 = false, prog = null, U = {}, glOn = false, texs = {}, dummy = null, dprC = 1, raf = 0, lastT = 0;
+  var textOff = { west: [0, 0], china: [0, 0] };
+
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function smooth(k) { return k * k * (3 - 2 * k); }
+  function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
+  function now() { return performance.now(); }
+
+  // ------------------------------------------------------------------ layout (cover + 留边，文字和门的热区跟着画面走)
+  function pickSet() { return innerWidth <= innerHeight ? 'port' : 'land'; }
+
+  function rectOf(b) { return { x: ox + b[0] * sc, y: oy + b[1] * sc, w: b[2] * sc, h: b[3] * sc }; }
+
+  function layout() {
+    vw = innerWidth; vh = innerHeight;
+    var k = pickSet(), changed = k !== setKey;
+    if (changed) { setKey = k; S = CFG.sets[k]; }
+    sc = Math.max(vw / S.w, vh / S.h) * Z;
+    iw = S.w * sc; ih = S.h * sc; ox = (vw - iw) / 2; oy = (vh - ih) / 2;
+    if (changed) onSetChange();
+    var st = stills.style;
+    st.left = ox + 'px'; st.top = oy + 'px'; st.width = iw + 'px'; st.height = ih + 'px';
+    SIDES.forEach(function (s) { placeVideo(s); placeDoor(s); });
+    placeText();
+    if (glOn) { sizeGL(); wake(); }
+  }
+
+  function placeDoor(s) {
+    var r = rectOf(S.box['portal_' + s]), d = doors[s].style;
+    d.left = r.x + 'px'; d.top = r.y + 'px'; d.width = r.w + 'px'; d.height = r.h + 'px';
+  }
+
+  // 文字不压住的地方（图像像素）：西段右边是门罩、下边是阿波罗；中段左边是门楼屋角、下边是景墙；竖屏下边是门罩/门楼
+  var KEEP = { land: { west: { right: 480, bottom: 540 }, china: { left: 1949, bottom: 545 } },
+               port: { west: { bottom: 520 }, china: { bottom: 520 } } };
+  function placeText() {
+    var small = Math.min(vw, vh) < 560, K = KEEP[setKey];
+    body.classList.toggle('short', setKey === 'land' && vh < 480);
+    var g = small ? 16 : Math.round(clamp(vw * 0.022, 20, 40));
+    var b0 = clamp(22 * sc, vw >= 1000 && vh >= 600 ? 14 : 12, 20), bMin = small ? 11.5 : 12.5;
+    var t0 = clamp(44 * sc, small ? 17 : 20, 40);
+    var top0 = mark.getBoundingClientRect().bottom + (small ? 12 : 18);
+    var rw = rectOf(S.box.text_west), rc = rectOf(S.box.text_china);
+    var minW = b0 * 10.5;
+    var wx = Math.max(rw.x, g), wr = Math.max(rw.x + rw.w, wx + minW);
+    if (K.west.right) wr = Math.max(Math.min(wr, ox + K.west.right * sc), wx + bMin * 10.5);
+    var cr = Math.min(rc.x + rc.w, vw - g), cx = Math.min(rc.x, cr - minW);
+    if (K.china.left) cx = Math.min(Math.max(cx, ox + K.china.left * sc), cr - bMin * 10.5);
+    if (setKey === 'port') {                       // 竖屏两段并排在顶上，中间留缝
+      var mid = vw / 2, gap = small ? 12 : 18;
+      wr = Math.min(wr, mid - gap / 2); cx = Math.max(cx, mid + gap / 2);
+    }
+    var ww = wr - wx, cw = cr - cx;
+    var B = { west: { x: wx, w: ww, y0: rw.y, lim: oy + K.west.bottom * sc },
+              china: { x: cx, w: cw, y0: rc.y, lim: oy + K.china.bottom * sc } };
+    // 两段同一套字号：标题一行放得下（西 5 字、中 7 字），再整体缩到两段都塞进各自的空处（不小于下限）
+    var tCap = Math.min(t0, ww / 5.7, cw / 7.8);
+    function apply(k) {
+      var tt = Math.max(small ? 16 : 18, tCap * k), bb = Math.max(bMin, Math.min(b0, Math.min(ww, cw) / 10.5) * k);
+      SIDES.forEach(function (s) { setText(s, B[s].x, top0, B[s].w, tt, bb); });
+      return Math.max(halls.west.offsetHeight - (B.west.lim - top0), halls.china.offsetHeight - (B.china.lim - top0));
+    }
+    var k = 1;
+    if (apply(1) > 0) {
+      var lo = 0.6, hi = 1;
+      for (var i = 0; i < 6; i++) { k = (lo + hi) / 2; if (apply(k) > 0) hi = k; else lo = k; }
+      k = lo; apply(k);
+    }
+    SIDES.forEach(function (s) {                    // 竖直：尽量放在原框的位置，放不下就往上挪，最高到馆名下面
+      var h = halls[s].offsetHeight, y = clamp(B[s].y0, top0, Math.max(top0, B[s].lim - h));
+      halls[s].style.top = Math.round(y) + 'px';
+    });
+  }
+
+  function setText(s, x, y, w, tt, bb) {
+    var st = halls[s].style;
+    st.left = Math.round(x) + 'px'; st.top = Math.round(y) + 'px'; st.width = Math.round(w) + 'px';
+    st.right = 'auto';
+    st.setProperty('--t', tt.toFixed(2) + 'px'); st.setProperty('--b', bb.toFixed(2) + 'px');
+  }
+
+  function placeVideo(s) {
+    var el = vids[s], info = videoInfo(s), st = el.style;
+    if (info && Math.abs(info.w / info.h - S.w / S.h) < 0.02) {          // 同机位同比例：和静帧完全对齐
+      st.left = ox + 'px'; st.top = oy + 'px'; st.width = iw + 'px'; st.height = ih + 'px';
+    } else { st.left = '0'; st.top = '0'; st.width = '100%'; st.height = '100%'; }
+  }
+
+  function onSetChange() {
+    SIDES.forEach(function (s) {
+      if (entering !== s) { var v = vids[s]; v.removeAttribute('src'); v.dataset.src = ''; try { v.load(); } catch (e) {} }
+    });
+    if (ext) loadDomHover();
+    if (gl) { setGLReady(false); loadSetTextures(setKey); }
+    updateLit();
+  }
+
+  // ------------------------------------------------------------------ hit test (门、文字、那半边的路)
+  function sideAt(x, y) {
+    if (!S) return null;
+    var ix = (x - ox) / sc, iy = (y - oy) / sc;
+    for (var i = 0; i < 2; i++) {
+      var zs = S.zones[SIDES[i]];
+      for (var j = 0; j < zs.length; j++) {
+        var r = zs[j];
+        if (ix >= r[0] && ix <= r[0] + r[2] && iy >= r[1] && iy <= r[1] + r[3]) return SIDES[i];
+      }
+    }
+    return null;
+  }
+  function sideOfEvent(e) {
+    var a = e.target && e.target.closest ? e.target.closest('[data-side]') : null;
+    return a ? a.getAttribute('data-side') : (e.target === stage || stage.contains(e.target)) ? sideAt(e.clientX, e.clientY) : null;
+  }
+
+  // ------------------------------------------------------------------ lit state (悬停 / 聚焦 / 进门)
+  function texReady(s) {
+    if (!glOn) return true;
+    var t = texs[setKey]; return !!(t && t[s] && t[s].ok);
+  }
+  function updateLit(dur) {
+    var l = entering || hover || focusSide || null;
+    if (l) body.setAttribute('data-lit', l); else body.removeAttribute('data-lit');
+    body.classList.toggle('hot', !!hover && !entering);
+    var tgt = [1, 0, 0];
+    if (l && texReady(l)) tgt = l === 'west' ? [0, 1, 0] : [0, 0, 1];
+    if (tgt[0] !== wTo[0] || tgt[1] !== wTo[1] || tgt[2] !== wTo[2] || (dur && wT0)) {
+      wFrom = W.slice(); wTo = tgt; wT0 = now(); wDur = dur || WDUR; wake();
+    }
+    if (l) { preload(l); prefetch(l); }
+  }
+  function setHover(s) { if (s !== hover) { hover = s; if (!entering) updateLit(); } }
+
+  // ------------------------------------------------------------------ input
+  addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'touch') {
+      lastMouse = now();
+      if (!entering) { T[0] = clamp(e.clientX / vw * 2 - 1, -1, 1); T[1] = clamp(e.clientY / vh * 2 - 1, -1, 1); wake(); }
+      setHover(sideOfEvent(e));
+    }
+  }, { passive: true });
+  doc.addEventListener('pointerout', function (e) {
+    if (!e.relatedTarget && e.pointerType !== 'touch') { setHover(null); if (!entering) { T = [0, 0]; wake(); } }
+  });
+  addEventListener('blur', function () { setHover(null); });
+  addEventListener('pointerdown', function (e) {        // 触屏：按下就开始加载那一边的视频
+    if (e.pointerType === 'touch') { var s = sideOfEvent(e); if (s) preload(s); }
+  }, { passive: true });
+
+  stage.addEventListener('click', function (e) {
+    if (entering) return;
+    var s = sideAt(e.clientX, e.clientY);
+    if (s) enter(s, halls[s].getAttribute('href'));
+  });
+  [halls.west, halls.china, doors.west, doors.china].forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;   // 新标签页打开照常
+      e.preventDefault();
+      if (!entering) enter(a.getAttribute('data-side'), a.getAttribute('href'));
+    });
+  });
+  SIDES.forEach(function (s) {
+    halls[s].addEventListener('focus', function () { focusSide = s; updateLit(); });
+    halls[s].addEventListener('blur', function () { if (focusSide === s) { focusSide = null; updateLit(); } });
+  });
+  // 进门过程中：再点一次 / 回车 / 空格 跳过，Esc 取消
+  addEventListener('click', function (e) {
+    if (entering && enterStarted) { e.preventDefault(); e.stopPropagation(); skip(); }
+  }, true);
+  addEventListener('keydown', function (e) {
+    if (entering) {
+      if (e.key === 'Escape') { e.preventDefault(); reset(true); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); skip(); }
+      return;
+    }
+    if (e.key === 'Escape' && !credits.hidden) toggleCredits(false);
+  });
+
+  // ------------------------------------------------------------------ video
+  function videoInfo(s) { var v = CFG.video && CFG.video[s]; return v && v[setKey] || null; }
+  function preload(s) {
+    var info = videoInfo(s); if (!info || reduce) return null;
+    var el = vids[s];
+    if (el.dataset.src !== info.src) { el.dataset.src = info.src; el.preload = 'auto'; el.src = info.src; try { el.load(); } catch (e) {} }
+    return el;
+  }
+  var prefetched = {};
+  function prefetch(s) {
+    if (prefetched[s]) return; prefetched[s] = 1;
+    var l = doc.createElement('link'); l.rel = 'prefetch'; l.href = halls[s].getAttribute('href'); doc.head.appendChild(l);
+  }
+  function whenReady(el, ms) {
+    return new Promise(function (res) {
+      if (el.readyState >= 3) return res(true);
+      var done = false, t;
+      function fin(ok) { if (done) return; done = true; clearTimeout(t); el.removeEventListener('canplay', yes); el.removeEventListener('canplaythrough', yes); el.removeEventListener('error', no); res(ok); }
+      function yes() { fin(true); } function no() { fin(false); }
+      el.addEventListener('canplay', yes); el.addEventListener('canplaythrough', yes); el.addEventListener('error', no);
+      t = setTimeout(function () { fin(el.readyState >= 3); }, ms);
+    });
+  }
+
+  // ------------------------------------------------------------------ entering a hall
+  var enterStarted = false, videoShown = false;
+  function enter(s, href) {
+    entering = s; enterHref = href; enterStarted = false; fading = false; videoShown = false;
+    hover = s; body.classList.add('entering'); body.classList.remove('hot');
+    updateLit(WDUR_ENTER);
+    if (glOn && !reduce) { neutral = { from: P.slice(), t0: now(), dur: NEUTRAL }; T = [0, 0]; wake(); }
+    later(function () { enterStarted = true; }, 120);
+    var el = preload(s);
+    if (!el) { fadeOut(450); return; }
+    if (el.readyState < 3) {                         // iOS 不预载：在点击里先 play() 一下让它开始缓冲，拿到画面就停回第 0 帧
+      el._prime = true;
+      try {
+        var pp = el.play();
+        if (pp && pp.then) pp.then(function () { if (el._prime) { el.pause(); try { el.currentTime = 0; } catch (e) {} } }, function () {});
+      } catch (e) {}
+    }
+    var minWait = new Promise(function (r) { later(r, Math.max(WDUR_ENTER, NEUTRAL) + 30); });
+    Promise.all([minWait, whenReady(el, 2600)]).then(function (r) {
+      if (entering !== s || fading) return;
+      if (!r[1]) { fadeOut(400); return; }
+      play(s, el);
+    });
+  }
+  function play(s, el) {
+    var shown = false;
+    function show() {
+      if (shown || entering !== s) return; shown = true;
+      el.classList.add('on'); videoShown = true;
+      A.walk(s, el);
+      later(stopGL, 200);
+      watchEnd(s, el);
+    }
+    el._prime = false;
+    try { if (el.currentTime > 0.01) el.currentTime = 0; } catch (e) {}
+    if (el.requestVideoFrameCallback) el.requestVideoFrameCallback(function () { show(); });
+    else el.addEventListener('timeupdate', function h() { el.removeEventListener('timeupdate', h); show(); });
+    var p;
+    try { p = el.play(); } catch (e) { fadeOut(400); return; }
+    if (p && p.then) p.then(function () { later(show, 400); }, function () { if (entering === s) fadeOut(400); });
+    else later(show, 400);
+  }
+  function watchEnd(s, el) {
+    var info = videoInfo(s) || {}, dur = el.duration && isFinite(el.duration) ? el.duration : info.dur || 6;
+    function tick() {
+      if (entering !== s || fading) return;
+      if (el.currentTime >= dur - VFADE_END || el.ended) { fadeOut(VFADE_END * 1000); return; }
+      later(tick, 40);
+    }
+    tick();
+    el.addEventListener('ended', function () { if (entering === s) fadeOut(150); }, { once: true });
+    later(function () { if (entering === s) fadeOut(300); }, (dur + 3) * 1000);    // 卡住也会走
+  }
+  function fadeOut(ms) {
+    if (fading || !entering) return;
+    fading = true;
+    A.fade(ms / 1000);                               // 声音跟着画面一起淡到 0
+    var href = enterHref;
+    veil.style.background = HALL_BG[entering] || '#0b0908';
+    veil.style.transition = 'opacity ' + Math.round(ms) + 'ms linear';
+    veil.classList.add('on', 'block');
+    if (!videoShown && !reduce && ms >= 300) {        // 没有视频：朝门口推近一点再淡出
+      var r = rectOf(S.box['door_' + entering]);
+      stage.style.transformOrigin = (r.x + r.w / 2) + 'px ' + (r.y + r.h * 0.6) + 'px';
+      stage.style.transition = 'transform ' + Math.round(ms + 150) + 'ms cubic-bezier(.45,0,.85,.55)';
+      stage.style.transform = 'scale(1.07)';
+    }
+    later(function () { stopGL(); location.assign(href); }, ms + 30);
+  }
+  function skip() { if (entering && !fading) fadeOut(250); }
+  function reset(fadeBack) {
+    timers.forEach(clearTimeout); timers = [];
+    entering = null; enterHref = null; fading = false; enterStarted = false; neutral = null;
+    A.cancel();
+    SIDES.forEach(function (s) { var v = vids[s]; v._prime = false; try { v.pause(); v.currentTime = 0; } catch (e) {} v.classList.remove('on'); });
+    body.classList.remove('entering'); videoShown = false;
+    stage.style.transition = 'none'; stage.style.transform = '';
+    veil.style.transition = fadeBack ? 'opacity .6s ease' : 'none';
+    veil.classList.remove('on', 'block');
+    hover = null; updateLit();
+    if (glOn) { lastT = 0; wake(); }
+  }
+  addEventListener('pageshow', function (e) {          // 从展厅返回（bfcache）：画面复位，声音停下、等下一次交互
+    if (e.persisted) A.sleep();
+    if (e.persisted || entering) reset(true);
+  });
+
+  // ------------------------------------------------------------------ credits
+  var credits = $('#credits'), cbtn = $('#credits-btn');
+  function toggleCredits(open) {
+    credits.hidden = !open; cbtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  cbtn.addEventListener('click', function (e) { e.stopPropagation(); toggleCredits(credits.hidden); });
+  doc.addEventListener('click', function (e) { if (!credits.hidden && !e.target.closest('.foot')) toggleCredits(false); });
+
+  // ------------------------------------------------------------------ sound
+  // 首屏不载音频。访客第一次点击 / 触屏 / 按键时才 fetch，并在能解锁音频的那个手势里建 AudioContext；钢琴与大厅底噪按循环点无缝循环、淡入。
+  // 进门：那一侧的音效跟着视频 currentTime 起（视频晚起、卡住都跟着等），大厅（钢琴 + 底噪）一路压低、过门后收低通，随最后的淡出到 0。
+  // 右下角开关 = 现在有没有声；关掉记在 localStorage，偏好为关时首次交互也不出声。任何一步失败都静默降级（不出声、不报错）。
+  var A = (function () {
+    function noop() {}
+    function pc(p) { if (p && p.catch) p.catch(noop); }
+    var api = { walk: noop, hold: noop, fade: noop, cancel: noop, sleep: noop, state: function () { return null; } };
+    var AU = CFG.audio, Ctor = window.AudioContext || window.webkitAudioContext, btn = $('#sound-btn');
+    if (!AU || !Ctor || !btn || !window.fetch) return api;
+    $('.snd').hidden = false;
+    var KEY = 'mam-lobby-sound', pref = true;
+    try { pref = localStorage.getItem(KEY) !== '0'; } catch (e) {}
+    var ctx = null, master = null, hallG = null, hallF = null, live = false, hidSusp = false, offTimer = 0;
+    var data = {}, dec = {}, ready = {}, loops = {}, walk = null, pending = null;
+
+    function on() { return pref && live; }
+    function paint() { btn.setAttribute('aria-pressed', on() ? 'true' : 'false'); }
+    function save() { try { localStorage.setItem(KEY, pref ? '1' : '0'); } catch (e) {} }
+
+    // 取文件不需要 AudioContext；解码需要。列表里第一个解不了（如 m4a）就退到下一个（mp3）
+    function fetchAB(url) {
+      return fetch(url).then(function (r) { return r.ok ? r.arrayBuffer() : null; }, function () { return null; });
+    }
+    function srcOf(k) { return k === 'piano' || k === 'air' ? AU[k].src : AU.walk[k.slice(5)].src; }
+    function fetchAll() {
+      ['piano', 'air', 'walk_west', 'walk_china'].forEach(function (k) { if (!data[k]) data[k] = fetchAB(srcOf(k)[0]); });
+    }
+    function decode(ab) {
+      return new Promise(function (res, rej) {
+        if (!ab) return rej(0);
+        try { var p = ctx.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); } catch (e) { rej(e); }
+      });
+    }
+    function load(k) {
+      if (dec[k]) return dec[k];
+      fetchAll();
+      var list = srcOf(k);
+      function attempt(i) {
+        return (i === 0 ? data[k] : fetchAB(list[i])).then(decode)
+          .then(function (b) { ready[k] = b; return b; }, function () { return i + 1 < list.length ? attempt(i + 1) : null; });
+      }
+      return (dec[k] = attempt(0));
+    }
+
+    function graph() {
+      try {
+        ctx = new Ctor();
+        master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+        hallG = ctx.createGain(); hallG.connect(master);
+        hallF = ctx.createBiquadFilter(); hallF.type = 'lowpass'; hallF.frequency.value = 20000; hallF.Q.value = 0; hallF.connect(hallG);
+      } catch (e) { ctx = null; return false; }
+      ctx.onstatechange = function () {
+        if (ctx.state === 'running' && pending) { var p = pending; pending = null; startWalk(p[0], p[1]); }
+      };
+      return true;
+    }
+    function unlock() {                              // iOS：手势里放一个 1 样本的空 buffer，确保输出被解锁
+      try { var s = ctx.createBufferSource(); s.buffer = ctx.createBuffer(1, 1, 22050); s.connect(ctx.destination); s.start(0); } catch (e) {}
+    }
+    function glide(p, to, sec, geo) {
+      var t = ctx.currentTime, cur = p.value;
+      try { p.cancelScheduledValues(0); } catch (e) {}
+      p.setValueAtTime(cur, t);
+      if (geo && cur > 0 && to > 0) p.exponentialRampToValueAtTime(to, t + sec); else p.linearRampToValueAtTime(to, t + sec);
+    }
+    function startLoops() {                          // 钢琴 + 底噪：解码好了就从头循环、约 3 s 淡入；进门途中不起
+      ['piano', 'air'].forEach(function (k) {
+        if (loops[k]) return;
+        load(k).then(function (b) {
+          if (!b || loops[k] || !on() || entering) return;
+          var c = AU[k], s = ctx.createBufferSource(), g = ctx.createGain(), t = ctx.currentTime;
+          s.buffer = b; s.loop = true;
+          s.loopStart = c.loopStart || 0; s.loopEnd = Math.min(c.loopEnd || b.duration, b.duration);
+          s.connect(g); g.connect(hallF);
+          g.gain.setValueAtTime(0.003, t); g.gain.exponentialRampToValueAtTime(c.gain || 1, t + (c.fadeIn || 3));
+          s.start(t);
+          loops[k] = { s: s, g: g };
+        });
+      });
+    }
+    function arm() {                                 // 只在能解锁音频的手势里调用
+      if (!ctx && !graph()) return;
+      if (!live) { live = true; unlock(); }
+      clearTimeout(offTimer);
+      if (ctx.state !== 'running' && !doc.hidden) pc(ctx.resume());
+      glide(master.gain, 1, 0.4);
+      fetchAll(); startLoops(); load('walk_west'); load('walk_china');
+      paint();
+    }
+
+    function isBtn(e) { return !!(e.target && e.target.closest && e.target.closest('#sound-btn')); }
+    function intent(e) { if (pref && !live && !isBtn(e)) fetchAll(); }
+    function activate(e) {
+      if (!pref || isBtn(e) || (e.type === 'keydown' && (e.key === 'Escape' || e.repeat))) return;
+      var ua = navigator.userActivation;
+      if (ua && !ua.isActive) return;                // 触屏的 pointerdown / touchstart 不算解锁手势：等 touchend / click
+      if (!live) arm();
+      else if (ctx && ctx.state !== 'running' && !doc.hidden) { unlock(); pc(ctx.resume()); }
+    }
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (t) { addEventListener(t, intent, { capture: true, passive: true }); });
+    ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) { addEventListener(t, activate, { capture: true, passive: true }); });
+
+    btn.addEventListener('click', function () {
+      if (on()) {
+        pref = false; save();
+        glide(master.gain, 0, 0.25);
+        clearTimeout(offTimer);
+        offTimer = setTimeout(function () { if (!on() && ctx && ctx.state === 'running') pc(ctx.suspend()); }, 320);
+      } else { pref = true; save(); arm(); }
+      paint();
+    });
+    doc.addEventListener('visibilitychange', function () {
+      if (!ctx) return;
+      if (doc.hidden) { if (ctx.state === 'running') { hidSusp = true; pc(ctx.suspend()); } }
+      else if (hidSusp) { hidSusp = false; if (on()) pc(ctx.resume()); }
+    });
+
+    // ---- 进门
+    function vdur(s, el) { return el.duration && isFinite(el.duration) ? el.duration : AU.walk[s].dur; }
+    function interp(pts, x, geo) {
+      if (x <= pts[0][0]) return pts[0][1];
+      for (var i = 1; i < pts.length; i++) if (x <= pts[i][0]) {
+        var a = pts[i - 1], b = pts[i], k = (x - a[0]) / ((b[0] - a[0]) || 1);
+        return geo ? a[1] * Math.pow(b[1] / a[1], k) : a[1] + (b[1] - a[1]) * k;
+      }
+      return pts[pts.length - 1][1];
+    }
+    function sched(p, pts, tau, geo, holdOnly) {     // 按视频时间 tau 把曲线排到 AudioContext 时间轴上
+      var t = ctx.currentTime;
+      try { p.cancelScheduledValues(0); } catch (e) {}
+      p.setValueAtTime(interp(pts, tau, geo), t);
+      if (holdOnly) return;
+      pts.forEach(function (q) {
+        if (q[0] <= tau) return;
+        if (geo) p.exponentialRampToValueAtTime(q[1], t + q[0] - tau); else p.linearRampToValueAtTime(q[1], t + q[0] - tau);
+      });
+    }
+    function duck(s, el, holdOnly) {
+      var D = AU.duck || {}, tau = el.currentTime, dur = vdur(s, el);
+      var hp = (D.hall || [[0, 1]]).filter(function (q) { return q[0] < dur; }).concat([[dur, 0]]);
+      sched(hallG.gain, hp, tau, false, holdOnly);
+      if (D.lowpass) sched(hallF.frequency, D.lowpass, tau, true, holdOnly);
+    }
+    function stopWalk(fade) {
+      pending = null;
+      if (!walk) return;
+      var w = walk, t = ctx.currentTime; walk = null;
+      try {
+        w.g.gain.cancelScheduledValues(0); w.g.gain.setValueAtTime(w.g.gain.value, t);
+        w.g.gain.linearRampToValueAtTime(0, t + fade); w.s.stop(t + fade + 0.02);
+      } catch (e) {}
+    }
+    function startWalk(s, el) {                      // 音效第 0 s = 视频第 0 帧：从视频当前时间那一点起
+      if (!ctx || !on() || entering !== s || fading || el.paused || el.ended) return;
+      var k = 'walk_' + s, b = ready[k];
+      if (ctx.state !== 'running' || !b) {
+        pending = [s, el];
+        if (!b) load(k).then(function (bb) { if (bb && pending && pending[0] === s) { var p = pending; pending = null; startWalk(p[0], p[1]); } });
+        return;
+      }
+      var tau = el.currentTime, dur = vdur(s, el);
+      if (tau > Math.min(dur, b.duration) - 0.15) return;
+      if (walk && walk.side === s && Math.abs(ctx.currentTime - walk.t0 + walk.off - tau) < 0.08) return;
+      stopWalk(0.03);
+      var src = ctx.createBufferSource(), g = ctx.createGain(), t = ctx.currentTime;
+      src.buffer = b; src.connect(g); g.connect(master); g.gain.value = AU.walkGain || 1;
+      src.start(t, tau);
+      walk = { side: s, s: src, g: g, t0: t, off: tau };
+      duck(s, el);
+    }
+    function hold(s, el) {                           // 视频卡住 / 暂停：音效停，大厅停在这一刻的位置；恢复播放时重新对齐
+      if (!ctx || entering !== s || fading) return;
+      stopWalk(0.05);
+      if (on()) duck(s, el, true);
+    }
+    api.walk = startWalk;
+    api.hold = hold;
+    api.fade = function (sec) { if (ctx && live) glide(master.gain, 0, Math.max(0.05, sec)); };
+    api.cancel = function () {                       // 进门途中按 Esc：音效收掉，大厅回来
+      if (!ctx) return;
+      stopWalk(0.15);
+      glide(hallG.gain, 1, 0.6); glide(hallF.frequency, 20000, 0.6, true);
+      if (on()) { glide(master.gain, 1, 0.4); startLoops(); }
+    };
+    api.sleep = function () {                        // 离开页面 / 从展厅返回（bfcache）：全部停下，等下一次交互再淡入
+      live = false; pending = null; hidSusp = false;
+      if (ctx) {
+        stopWalk(0);
+        ['piano', 'air'].forEach(function (k) { if (loops[k]) { try { loops[k].s.stop(); } catch (e) {} loops[k] = null; } });
+        [[master.gain, 0], [hallG.gain, 1], [hallF.frequency, 20000]].forEach(function (q) {   // 直接写 value：挂起的 context 不渲染，排程的值要到恢复后才生效
+          try { q[0].cancelScheduledValues(0); } catch (e) {}
+          try { q[0].value = q[1]; } catch (e) { q[0].setValueAtTime(q[1], ctx.currentTime); }
+        });
+        if (ctx.state === 'running') pc(ctx.suspend());
+      }
+      paint();
+    };
+    api.state = function () {
+      return { pref: pref, live: live, on: on(), pressed: btn.getAttribute('aria-pressed'), ctx: ctx ? ctx.state : null,
+               t: ctx ? ctx.currentTime : 0, master: master ? master.gain.value : null, hall: hallG ? hallG.gain.value : null,
+               lp: hallF ? hallF.frequency.value : null, piano: loops.piano ? loops.piano.g.gain.value : null,
+               air: loops.air ? loops.air.g.gain.value : null, fetched: Object.keys(data), decoded: Object.keys(ready),
+               walk: walk ? { side: walk.side, off: walk.off, pos: ctx.currentTime - walk.t0 + walk.off } : null };
+    };
+    paint();
+    return api;
+  })();
+  SIDES.forEach(function (s) {
+    var v = vids[s];
+    v.addEventListener('playing', function () { if (entering === s && !v._prime) A.walk(s, v); });
+    ['waiting', 'pause', 'seeking'].forEach(function (t) {
+      v.addEventListener(t, function () { if (entering === s && !v._prime && !v.ended) A.hold(s, v); });
+    });
+  });
+  addEventListener('pagehide', function () { A.sleep(); });
+
+  // ------------------------------------------------------------------ DOM stills (首屏、降级)
+  function loadDomHover() {
+    imgs.west.src = S.img.west + '.' + ext;
+    imgs.china.src = S.img.china + '.' + ext;
+  }
+
+  // ------------------------------------------------------------------ WebGL depth parallax
+  var VS = 'attribute vec2 a;varying vec2 v;void main(){v=vec2(a.x*.5+.5,.5-a.y*.5);gl_Position=vec4(a,0.,1.);}';
+  var FS_BODY = [
+    'uniform sampler2D uR,uW,uC,uD;uniform vec3 uWt;uniform vec2 uOff;uniform vec4 uMap;uniform float uF,uLod;',
+    'float dep(vec2 p){return TEXL(uD,p,0.).r;}',
+    'void main(){',
+    ' vec2 s=v*uMap.xy+uMap.zw;',
+    ' const int N=24;float dt=1./float(N);',
+    ' float t=1.;vec2 p=s-uOff*(t-uF);float d=dep(p);float pt=t,pd=d;',
+    ' for(int i=0;i<N;i++){if(d>=t)break;pt=t;pd=d;t-=dt;p=s-uOff*(t-uF);d=dep(p);}',
+    ' float a=pd-pt,b=d-t,q=b-a;float k=q>1e-5?clamp(b/q,0.,1.):0.;',
+    ' float th=mix(t,pt,k);vec2 r=s-uOff*(th-uF);',
+    // 侧壁命中（射线从侧面撞进前景的足迹 = 被前景让出来的地方）：改取足迹外一步的背景色，不拉前景的边
+    ' r=mix(r,s-uOff*(pt-uF),smoothstep(1.2*dt,2.6*dt,b));',
+    ' vec3 c=TEXL(uR,r,uLod).rgb*uWt.x;',
+    ' if(uWt.y>.001)c+=TEXL(uW,r,uLod).rgb*uWt.y;',
+    ' if(uWt.z>.001)c+=TEXL(uC,r,uLod).rgb*uWt.z;',
+    ' OUT=vec4(c,1.);}'
+  ].join('\n');
+
+  function compile(type, src) {
+    var sh = gl.createShader(type); gl.shaderSource(sh, src); gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.warn('lobby shader:', gl.getShaderInfoLog(sh)); return null; }
+    return sh;
+  }
+  function initGL() {
+    if (reduce) return false;
+    var o = { alpha: false, antialias: false, depth: false, stencil: false, premultipliedAlpha: false,
+              preserveDrawingBuffer: false, powerPreference: 'low-power' };
+    try { gl = cv.getContext('webgl2', o); gl2 = !!gl; if (!gl) gl = cv.getContext('webgl', o) || cv.getContext('experimental-webgl', o); }
+    catch (e) { gl = null; }
+    if (!gl) return false;
+    var vs, fs;
+    if (gl2) {
+      vs = compile(gl.VERTEX_SHADER, '#version 300 es\n' + VS.replace('attribute', 'in').replace('varying', 'out'));
+      fs = compile(gl.FRAGMENT_SHADER, '#version 300 es\nprecision highp float;\n#define TEXL textureLod\n#define OUT o\nin vec2 v;out vec4 o;\n' + FS_BODY);
+    } else {
+      vs = compile(gl.VERTEX_SHADER, VS);
+      fs = compile(gl.FRAGMENT_SHADER, 'precision highp float;\n#define TEXL(t,p,l) texture2D(t,p)\n#define OUT gl_FragColor\nvarying vec2 v;\n' + FS_BODY);
+    }
+    if (!vs || !fs) { gl = null; return false; }
+    prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs);
+    gl.bindAttribLocation(prog, 0, 'a'); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.warn('lobby link:', gl.getProgramInfoLog(prog)); gl = null; return false; }
+    gl.useProgram(prog);
+    ['uR', 'uW', 'uC', 'uD', 'uWt', 'uOff', 'uMap', 'uF', 'uLod'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    gl.uniform1i(U.uR, 0); gl.uniform1i(U.uW, 1); gl.uniform1i(U.uC, 2); gl.uniform1i(U.uD, 3);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    dummy = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, dummy);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+    cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); gl = null; glOn = false; body.classList.remove('gl'); }, false);
+    return true;
+  }
+  function loadImage(url) {
+    return new Promise(function (res, rej) {
+      var im = new Image(); im.decoding = 'async';
+      im.onload = function () { (im.decode ? im.decode() : Promise.resolve()).then(function () { res(im); }, function () { res(im); }); };
+      im.onerror = function () { rej(new Error('image ' + url)); };
+      im.src = url;
+    });
+  }
+  function upload(im, isDepth) {
+    var t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, isDepth ? gl.NONE : gl.BROWSER_DEFAULT_WEBGL);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, im);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    if (gl2 && !isDepth) { gl.generateMipmap(gl.TEXTURE_2D); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
+    else gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    return t;
+  }
+  function loadSetTextures(k) {
+    if (!gl) return;
+    var st = CFG.sets[k], ts = texs[k];
+    if (!ts) {
+      ts = texs[k] = {};
+      var one = function (name, url, isDepth) {
+        ts[name] = { ok: false };
+        return loadImage(url).then(function (im) {
+          if (!gl) return;
+          ts[name].tex = upload(im, isDepth); ts[name].ok = true;
+          if (k === setKey) { if (ts.rest.ok && ts.depth.ok) setGLReady(true); updateLit(); wake(); }
+        }, function (e) { console.warn('lobby:', e.message); });
+      };
+      one('rest', st.img.rest + '.' + ext); one('depth', st.depth, true);
+      later0(function () { one('west', st.img.west + '.' + ext); one('china', st.img.china + '.' + ext); }, 60);
+    } else if (ts.rest.ok && ts.depth.ok) setGLReady(true);
+  }
+  function later0(fn, ms) { setTimeout(fn, ms); }
+  function setGLReady(on) {
+    glOn = !!on && !!gl;
+    if (glOn) { sizeGL(); lastT = 0; draw(); body.classList.add('gl'); wake(); }
+    else body.classList.remove('gl');
+  }
+  function sizeGL() {
+    var d = Math.min(window.devicePixelRatio || 1, 2, Math.max(1, S.w * 1.1 / iw));
+    dprC = d;
+    var w = Math.max(1, Math.round(vw * d)), h = Math.max(1, Math.round(vh * d));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+  }
+  function bind(unit, t) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t && t.ok ? t.tex : dummy); }
+  function draw() {
+    if (!gl || !glOn) return;
+    var ts = texs[setKey];
+    gl.viewport(0, 0, cv.width, cv.height);
+    bind(0, ts.rest); bind(1, ts.west); bind(2, ts.china); bind(3, ts.depth);
+    var w1 = ts.west && ts.west.ok ? W[1] : 0, w2 = ts.china && ts.china.ok ? W[2] : 0;
+    gl.uniform3f(U.uWt, 1 - w1 - w2, w1, w2);
+    var ux = -P[0] * AMP[0] * S.vmax, uy = -P[1] * AMP[1] * S.vmax;
+    gl.uniform2f(U.uOff, ux, uy);
+    gl.uniform4f(U.uMap, vw / iw, vh / ih, -ox / iw, -oy / ih);
+    gl.uniform1f(U.uF, S.focus);
+    gl.uniform1f(U.uLod, Math.max(0, Math.log(S.w / (iw * dprC)) / Math.LN2 - 0.25));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    SIDES.forEach(function (s) {                     // 文字贴着身后的墙，跟着那一层深度走
+      var dd = S.textDepth[s] - S.focus, x = ux * dd * iw, y = uy * dd * ih, o = textOff[s];
+      if (Math.abs(x - o[0]) > 0.05 || Math.abs(y - o[1]) > 0.05) {
+        o[0] = x; o[1] = y; halls[s].style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)';
+      }
+    });
+  }
+  function driftOn() { return noHover.matches && now() - lastMouse > 4000 && !entering && !reduce; }
+  function frame(t) {
+    raf = 0;
+    if (!glOn) return;
+    var dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 0.016; lastT = t;
+    var active = false, drift = driftOn();
+    if (drift) {                                     // 触屏：极慢的自动漂移（约 60–80 s 一个来回）
+      var s = t / 1000; T[0] = Math.sin(s * 0.09) * 0.6; T[1] = Math.sin(s * 0.067 + 1.3) * 0.35; active = true;
+    }
+    if (neutral) {
+      var k = clamp((t - neutral.t0) / neutral.dur, 0, 1), e = smooth(k);
+      P[0] = neutral.from[0] * (1 - e); P[1] = neutral.from[1] * (1 - e); V[0] = P[0]; V[1] = P[1];
+      if (k >= 1) neutral = null; else active = true;
+    } else if (!entering) {
+      var k1 = 1 - Math.exp(-dt * 4.0), k2 = 1 - Math.exp(-dt * 5.5);       // 两级低通 = 惯性
+      for (var i = 0; i < 2; i++) { V[i] += (T[i] - V[i]) * k1; P[i] += (V[i] - P[i]) * k2; }
+      if (Math.abs(T[0] - P[0]) + Math.abs(T[1] - P[1]) + Math.abs(T[0] - V[0]) + Math.abs(T[1] - V[1]) > 4e-4) active = true;
+      else { P[0] = V[0] = T[0]; P[1] = V[1] = T[1]; }
+    }
+    if (wT0) {
+      var kw = clamp((t - wT0) / wDur, 0, 1), ew = smooth(kw);
+      for (var j = 0; j < 3; j++) W[j] = wFrom[j] + (wTo[j] - wFrom[j]) * ew;
+      if (kw >= 1) wT0 = 0; else active = true;
+    }
+    draw();
+    if (active) {
+      if (drift && !wT0 && !neutral) { raf = -1; setTimeout(function () { raf = 0; wake(); }, 33); }   // 漂移只要 ~24 fps
+      else raf = requestAnimationFrame(frame);
+    }
+  }
+  function wake() { if (!raf && glOn) raf = requestAnimationFrame(frame); }
+  function stopGL() { if (raf > 0) cancelAnimationFrame(raf); raf = 0; }
+  // DOM 模式下的权重只用于 CSS（data-lit），不需要循环
+
+  // ------------------------------------------------------------------ boot
+  addEventListener('resize', layout);
+  addEventListener('orientationchange', function () { setTimeout(layout, 120); });
+  layout();
+
+  var revealed = false;
+  function reveal() {
+    if (revealed) return; revealed = true;
+    veil.classList.remove('on');
+    body.classList.add('ready');
+  }
+  var fontsReady = (doc.fonts && doc.fonts.ready) ? Promise.race([doc.fonts.ready, new Promise(function (r) { setTimeout(r, 1500); })]) : Promise.resolve();
+  function restLoaded() {
+    var cs = imgs.rest.currentSrc || imgs.rest.src || '';
+    ext = /\.avif(\?|$)/.test(cs) ? 'avif' : 'webp';
+    fontsReady.then(function () { layout(); reveal(); });
+    loadDomHover();
+    if (initGL()) loadSetTextures(setKey);
+    if (noHover.matches && !reduce) {                // 触屏：空闲时预载两边的视频（省流量模式不载）
+      var c = navigator.connection;
+      if (!(c && (c.saveData || /2g|3g/.test(c.effectiveType || '')))) setTimeout(function () { if (!entering) { preload('west'); preload('china'); } }, 3500);
+    }
+  }
+  var r = imgs.rest;
+  if (r.complete && r.naturalWidth) (r.decode ? r.decode().catch(function () {}) : Promise.resolve()).then(restLoaded);
+  else { r.addEventListener('load', restLoaded, { once: true }); r.addEventListener('error', function () { ext = 'webp'; reveal(); }, { once: true }); }
+  setTimeout(reveal, 4000);                          // 慢网也别一直黑着
+  window.__lobby = { state: function () { return { set: setKey, ext: ext, gl: glOn, gl2: gl2, lit: body.getAttribute('data-lit'), W: W.slice(), P: P.slice(), raf: raf, entering: entering, fading: fading }; }, enter: enter, reset: reset, layout: layout, audio: function () { return A.state(); } };
+})();
+</script>
+</body>
+</html>

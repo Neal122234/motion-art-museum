@@ -1,0 +1,20 @@
+/west/rooms/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/west/audio/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/west/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/china/rooms/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/china/audio/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/china/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

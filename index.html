@@ -93,6 +93,24 @@ body.short .hall .lab{margin-bottom:.3em}
 body.short .hall .en{margin:.2em 0 .55em}
 body.short .hall .desc{line-height:1.62}
 
+/* ---------- 入口幕（第一次点击 = 进门，同时让浏览器放行声音；同一次浏览里不再出现） ---------- */
+#gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;width:100%;height:100%;margin:0;padding:0;border:0;
+  cursor:pointer;background:rgba(11,9,8,.84);color:var(--ink);-webkit-tap-highlight-color:transparent;
+  transition:opacity 1.1s ease,visibility 0s linear 1.1s}
+#gate[hidden]{display:none}
+#gate .g{display:flex;flex-direction:column;align-items:center;gap:15px;text-shadow:var(--shadow);pointer-events:none}
+#gate .t{font:500 15px/1 var(--didone);letter-spacing:.42em;padding-left:.42em;color:var(--ink)}
+#gate .r{width:44px;height:1px;background:rgba(236,227,212,.32)}
+#gate .c{font:400 15px/1 var(--song);letter-spacing:.34em;padding-left:.34em;color:var(--ink2);animation:gate-breathe 3.6s ease-in-out infinite}
+#gate .e{font:italic 400 13px/1 var(--didone);letter-spacing:.05em;color:var(--ink3)}
+#gate:focus{outline:none}
+#gate:focus-visible .c{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:7px}
+#gate.gone{opacity:0;visibility:hidden;pointer-events:none}
+body.gated .snd{z-index:51;opacity:1}
+body.gated .mark{opacity:0 !important}
+@keyframes gate-breathe{0%,100%{opacity:.72}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){#gate{transition:opacity .25s ease,visibility 0s linear .25s}#gate .c{animation:none}}
+
 /* ---------- 黑场（入场淡入、进门淡出） ---------- */
 #veil{position:fixed;inset:0;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .9s ease}
 #veil.on{opacity:1}
@@ -135,7 +153,7 @@ body.ready .snd{opacity:1}
   .mark,.hall,.foot,.snd{transition-duration:.2s;transition-delay:0s}
 }
 </style>
-<noscript><style>.hall,.mark,.foot{opacity:1 !important}#veil{display:none}.snd{display:none}</style></noscript>
+<noscript><style>.hall,.mark,.foot{opacity:1 !important}#veil{display:none}.snd{display:none}#gate{display:none}</style></noscript>
 </head>
 <body>
 <div id="stage" aria-hidden="true">
@@ -194,6 +212,7 @@ body.ready .snd{opacity:1}
 </div>
 
 <div id="veil" class="on"></div>
+<button id="gate" type="button" hidden aria-label="进入门厅（有声音，右下角可关）"><span class="g"><span class="t">MOTION ART MUSEUM</span><span class="r"></span><span class="c">点击进入</span><span class="e">click to enter</span></span></button>
 
 <script src="assets.js"></script>
 <script>
@@ -924,6 +943,27 @@ body.ready .snd{opacity:1}
   function wake() { if (!raf && glOn) raf = requestAnimationFrame(frame); }
   function stopGL() { if (raf > 0) cancelAnimationFrame(raf); raf = 0; }
   // DOM 模式下的权重只用于 CSS（data-lit），不需要循环
+
+  // ------------------------------------------------------------------ gate
+  // 入口幕：第一次点击落在"进门"上，这一下同时让浏览器放行声音（声音模块在 window 的捕获阶段就接住了这个手势）。
+  // 同一次浏览（sessionStorage）里已经进过门，就不再出现。点右下角声音开关不算进门。
+  (function () {
+    var gate = $('#gate');
+    if (!gate) return;
+    var seen = false;
+    try { seen = sessionStorage.getItem('mam-entered') === '1'; } catch (e) {}
+    if (seen) { gate.parentNode.removeChild(gate); return; }
+    gate.hidden = false;
+    body.classList.add('gated');
+    try { gate.focus({ preventScroll: true }); } catch (e) {}
+    gate.addEventListener('click', function () {
+      if (gate.classList.contains('gone')) return;
+      gate.classList.add('gone');
+      body.classList.remove('gated');
+      try { sessionStorage.setItem('mam-entered', '1'); } catch (e) {}
+      setTimeout(function () { if (gate.parentNode) gate.parentNode.removeChild(gate); }, 1300);
+    });
+  })();
 
   // ------------------------------------------------------------------ boot
   addEventListener('resize', layout);

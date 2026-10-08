@@ -509,8 +509,8 @@ body.ready .snd{opacity:1}
     hover = null; updateLit();
     if (glOn) { lastT = 0; wake(); }
   }
-  addEventListener('pageshow', function (e) {          // 从展厅返回（bfcache）：画面复位，声音停下、等下一次交互
-    if (e.persisted) A.sleep();
+  addEventListener('pageshow', function (e) {          // 从展厅返回（bfcache）：画面复位，声音先停下，再试自动播放（不行就等下一次交互）
+    if (e.persisted) { A.sleep(); setTimeout(A.auto, 600); }
     if (e.persisted || entering) reset(true);
   });
 
@@ -523,23 +523,25 @@ body.ready .snd{opacity:1}
   doc.addEventListener('click', function (e) { if (!credits.hidden && !e.target.closest('.foot')) toggleCredits(false); });
 
   // ------------------------------------------------------------------ sound
-  // 首屏不载音频。访客第一次点击 / 触屏 / 按键时才 fetch，并在能解锁音频的那个手势里建 AudioContext；钢琴与大厅底噪按循环点无缝循环、淡入。
-  // 进门：那一侧的音效跟着视频 currentTime 起（视频晚起、卡住都跟着等），大厅（钢琴 + 底噪）一路压低、过门后收低通，随最后的淡出到 0。
-  // 右下角开关 = 现在有没有声；关掉记在 localStorage，偏好为关时首次交互也不出声。任何一步失败都静默降级（不出声、不报错）。
+  // 声音默认开：首屏画好后约 1 s 开始取音频并试着直接出声（浏览器允许自动播放时，例如访客之前在本站点过）；
+  // 被拦下就等第一次点击 / 触屏 / 按键，在那个手势里解锁并淡入。钢琴与大厅底噪按循环点无缝循环、淡入。
+  // 进门：那一侧的音效跟着视频 currentTime 起（视频晚起、卡住都跟着等）。西门：大厅（钢琴 + 底噪）一路压低、过门后收低通，随最后的淡出到 0；
+  // 中国门：大厅半秒内淡出，只留门后自己的声音（脚步、开门、虫鸣）。
+  // 右下角开关显示的是偏好（默认开）；关掉记在 localStorage，偏好为关时什么都不出声。任何一步失败都静默降级（不出声、不报错）。
   var A = (function () {
     function noop() {}
     function pc(p) { if (p && p.catch) p.catch(noop); }
-    var api = { walk: noop, hold: noop, fade: noop, cancel: noop, sleep: noop, state: function () { return null; } };
+    var api = { auto: noop, walk: noop, hold: noop, fade: noop, cancel: noop, sleep: noop, state: function () { return null; } };
     var AU = CFG.audio, Ctor = window.AudioContext || window.webkitAudioContext, btn = $('#sound-btn');
     if (!AU || !Ctor || !btn || !window.fetch) return api;
     $('.snd').hidden = false;
-    var KEY = 'mam-lobby-sound', pref = true;
+    var KEY = 'mam-lobby-sound-2', pref = true;
     try { pref = localStorage.getItem(KEY) !== '0'; } catch (e) {}
     var ctx = null, master = null, hallG = null, hallF = null, live = false, hidSusp = false, offTimer = 0;
     var data = {}, dec = {}, ready = {}, loops = {}, walk = null, pending = null;
 
     function on() { return pref && live; }
-    function paint() { btn.setAttribute('aria-pressed', on() ? 'true' : 'false'); }
+    function paint() { btn.setAttribute('aria-pressed', pref ? 'true' : 'false'); }
     function save() { try { localStorage.setItem(KEY, pref ? '1' : '0'); } catch (e) {} }
 
     // 取文件不需要 AudioContext；解码需要。列表里第一个解不了（如 m4a）就退到下一个（mp3）
@@ -575,7 +577,9 @@ body.ready .snd{opacity:1}
         hallF = ctx.createBiquadFilter(); hallF.type = 'lowpass'; hallF.frequency.value = 20000; hallF.Q.value = 0; hallF.connect(hallG);
       } catch (e) { ctx = null; return false; }
       ctx.onstatechange = function () {
-        if (ctx.state === 'running' && pending) { var p = pending; pending = null; startWalk(p[0], p[1]); }
+        if (ctx.state !== 'running') return;
+        if (!live && pref && !doc.hidden) begin();
+        if (pending) { var p = pending; pending = null; startWalk(p[0], p[1]); }
       };
       return true;
     }
@@ -603,14 +607,24 @@ body.ready .snd{opacity:1}
         });
       });
     }
-    function arm() {                                 // 只在能解锁音频的手势里调用
-      if (!ctx && !graph()) return;
-      if (!live) { live = true; unlock(); }
+    function begin() {                               // context 已在运行：大厅淡入、预解码进门音效
+      live = true;
       clearTimeout(offTimer);
-      if (ctx.state !== 'running' && !doc.hidden) pc(ctx.resume());
       glide(master.gain, 1, 0.4);
       fetchAll(); startLoops(); load('walk_west'); load('walk_china');
       paint();
+    }
+    function arm() {                                 // 只在能解锁音频的手势里调用
+      if (!ctx && !graph()) return;
+      unlock();
+      if (ctx.state === 'running') begin();
+      else if (!doc.hidden) pc(ctx.resume());       // 运行起来后 onstatechange 里 begin()
+    }
+    function auto() {                                // 不等手势先试一次：浏览器允许自动播放就直接出声，否则停在 suspended 等手势
+      if (!pref || live || doc.hidden) return;
+      fetchAll();
+      if (!ctx && !graph()) return;
+      if (ctx.state === 'running') begin(); else pc(ctx.resume());
     }
 
     function isBtn(e) { return !!(e.target && e.target.closest && e.target.closest('#sound-btn')); }
@@ -626,6 +640,7 @@ body.ready .snd{opacity:1}
     ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) { addEventListener(t, activate, { capture: true, passive: true }); });
 
     btn.addEventListener('click', function () {
+      if (pref && !live) { arm(); return; }
       if (on()) {
         pref = false; save();
         glide(master.gain, 0, 0.25);
@@ -662,7 +677,8 @@ body.ready .snd{opacity:1}
     }
     function duck(s, el, holdOnly) {
       var D = AU.duck || {}, tau = el.currentTime, dur = vdur(s, el);
-      var hp = (D.hall || [[0, 1]]).filter(function (q) { return q[0] < dur; }).concat([[dur, 0]]);
+      var hp = s === 'china' ? [[0, 1], [0.5, 0], [dur, 0]]          // 中国门：钢琴与底噪半秒内收掉，只留门后的声音
+             : (D.hall || [[0, 1]]).filter(function (q) { return q[0] < dur; }).concat([[dur, 0]]);
       sched(hallG.gain, hp, tau, false, holdOnly);
       if (D.lowpass) sched(hallF.frequency, D.lowpass, tau, true, holdOnly);
     }
@@ -698,6 +714,7 @@ body.ready .snd{opacity:1}
       stopWalk(0.05);
       if (on()) duck(s, el, true);
     }
+    api.auto = auto;
     api.walk = startWalk;
     api.hold = hold;
     api.fade = function (sec) { if (ctx && live) glide(master.gain, 0, Math.max(0.05, sec)); };
@@ -707,7 +724,10 @@ body.ready .snd{opacity:1}
       glide(hallG.gain, 1, 0.6); glide(hallF.frequency, 20000, 0.6, true);
       if (on()) { glide(master.gain, 1, 0.4); startLoops(); }
     };
-    api.sleep = function () {                        // 离开页面 / 从展厅返回（bfcache）：全部停下，等下一次交互再淡入
+    if (doc.readyState === 'complete') setTimeout(auto, 900);
+    else addEventListener('load', function () { setTimeout(auto, 900); });
+    doc.addEventListener('visibilitychange', function () { if (!doc.hidden && !live) auto(); });
+    api.sleep = function () {                        // 离开页面 / 从展厅返回（bfcache）：全部停下，之后再试自动播放或等下一次交互
       live = false; pending = null; hidSusp = false;
       if (ctx) {
         stopWalk(0);
